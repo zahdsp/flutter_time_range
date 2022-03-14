@@ -6,6 +6,7 @@ import 'package:numberpicker/numberpicker.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 typedef onSelectCallback = void Function(TimeOfDay from, TimeOfDay to);
+typedef onSelectOneCallback = void Function(TimeOfDay from);
 typedef onCancelCallback = void Function();
 
 class TimeRangePicker extends StatefulWidget {
@@ -24,12 +25,19 @@ class TimeRangePicker extends StatefulWidget {
   /// Callback which called when select button clicked / tapped
   final onSelectCallback? onSelect;
 
+  /// Callback which called when select button clicked / tapped
+  final onSelectOneCallback? onSelectTime;
+
   /// Callback which called when cancel button clicked / tapped
   final onCancelCallback? onCancel;
 
   /// Caption for first tab
   /// default was "From"
   final String tabFromText;
+
+  /// Caption for one tab
+  /// default was "From"
+  final String tabOneText;
 
   /// Caption for second tab
   /// default was "To"
@@ -118,45 +126,51 @@ class TimeRangePicker extends StatefulWidget {
   /// Color of indicator active tab
   final Color indicatorColor;
 
-  TimeRangePicker(
-      {Key? key,
-      @required this.initialFromHour,
-      @required this.initialToHour,
-      @required this.initialFromMinutes,
-      @required this.initialToMinutes,
-      this.onSelect,
-      this.onCancel,
-      this.tabFromText = "From",
-      this.tabToText = "To",
-      this.cancelText = "Cancel",
-      this.nextText = "Next",
-      this.backText = "Back",
-      this.selectText = "Select",
-      this.selectedTimeStyle =
-          const TextStyle(color: Colors.blueAccent, fontSize: 30),
-      this.unselectedTimeStyle =
-          const TextStyle(color: Color(0xFFBDBDBD), fontSize: 13),
-      this.timeContainerStyle,
-      this.editable = true,
-      this.is24Format = true,
-      this.activeBgColor = Colors.blueAccent,
-      this.activeFgColor = Colors.white,
-      this.inactiveBgColor = Colors.grey,
-      this.inactiveFgColor = Colors.white,
-      this.iconBack,
-      this.iconNext,
-      this.iconCancel,
-      this.iconSelect,
-      this.disableTabInteraction = true,
-      this.separatorStyle = const TextStyle(color: Colors.black, fontSize: 30),
-      this.activeTabStyle =
-          const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-      this.inactiveTabStyle =
-          const TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
-      this.activeLabelColor = Colors.blueAccent,
-      this.inactiveLabelColor = Colors.grey,
-      this.indicatorColor = Colors.blueAccent})
-      : super(key: key);
+  // Condition using one tab or two tab
+  final bool isOneTabBar;
+
+  TimeRangePicker({
+    Key? key,
+    required this.initialFromHour,
+    required this.initialToHour,
+    required this.initialFromMinutes,
+    required this.initialToMinutes,
+    this.isOneTabBar = false,
+    this.onSelect,
+    this.onSelectTime,
+    this.onCancel,
+    this.tabOneText = "From",
+    this.tabFromText = "From",
+    this.tabToText = "To",
+    this.cancelText = "Cancel",
+    this.nextText = "Next",
+    this.backText = "Back",
+    this.selectText = "Select",
+    this.selectedTimeStyle =
+        const TextStyle(color: Colors.blueAccent, fontSize: 30),
+    this.unselectedTimeStyle =
+        const TextStyle(color: Color(0xFFBDBDBD), fontSize: 13),
+    this.timeContainerStyle,
+    this.editable = true,
+    this.is24Format = true,
+    this.activeBgColor = Colors.blueAccent,
+    this.activeFgColor = Colors.white,
+    this.inactiveBgColor = Colors.grey,
+    this.inactiveFgColor = Colors.white,
+    this.iconBack,
+    this.iconNext,
+    this.iconCancel,
+    this.iconSelect,
+    this.disableTabInteraction = true,
+    this.separatorStyle = const TextStyle(color: Colors.black, fontSize: 30),
+    this.activeTabStyle =
+        const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+    this.inactiveTabStyle =
+        const TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
+    this.activeLabelColor = Colors.blueAccent,
+    this.inactiveLabelColor = Colors.grey,
+    this.indicatorColor = Colors.blueAccent,
+  }) : super(key: key);
 
   @override
   _TimeRangePickerState createState() => _TimeRangePickerState();
@@ -184,7 +198,10 @@ class _TimeRangePickerState extends State<TimeRangePicker>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(
+      length: widget.isOneTabBar ? 1 : 2,
+      vsync: this,
+    );
     _tabController.addListener(() {
       setState(() {
         _selectedTab = _tabController.index;
@@ -255,8 +272,12 @@ class _TimeRangePickerState extends State<TimeRangePicker>
                     unselectedLabelColor: widget.inactiveLabelColor,
                     unselectedLabelStyle: widget.inactiveTabStyle,
                     tabs: [
-                      Tab(text: widget.tabFromText),
-                      Tab(text: widget.tabToText)
+                      if (widget.isOneTabBar) ...[
+                        Tab(text: widget.tabOneText),
+                      ] else ...[
+                        Tab(text: widget.tabFromText),
+                        Tab(text: widget.tabToText)
+                      ],
                     ],
                   ),
                 )
@@ -268,8 +289,12 @@ class _TimeRangePickerState extends State<TimeRangePicker>
                   labelColor: widget.activeLabelColor,
                   unselectedLabelColor: widget.inactiveLabelColor,
                   tabs: [
-                    Tab(text: widget.tabFromText),
-                    Tab(text: widget.tabToText)
+                    if (widget.isOneTabBar) ...[
+                      Tab(text: widget.tabOneText),
+                    ] else ...[
+                      Tab(text: widget.tabFromText),
+                      Tab(text: widget.tabToText)
+                    ],
                   ],
                 ),
           Expanded(
@@ -281,328 +306,503 @@ class _TimeRangePickerState extends State<TimeRangePicker>
                     : null,
                 controller: _tabController,
                 children: [
-                  Container(
-                    padding: EdgeInsets.only(left: 7, right: 7),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          widget.is24Format
-                              ? Container(
-                                  height: 30,
-                                )
-                              : Padding(
-                                  padding: EdgeInsets.only(bottom: 20),
-                                  child: ToggleSwitch(
-                                    minWidth: 90.0,
-                                    minHeight: 30,
-                                    cornerRadius: 20.0,
-                                    activeBgColor: widget.activeBgColor,
-                                    activeFgColor: widget.activeFgColor,
-                                    inactiveBgColor: widget.inactiveBgColor,
-                                    inactiveFgColor: widget.inactiveFgColor,
-                                    labels: ['AM', 'PM'],
-                                    initialLabelIndex: fromIndex,
-                                    onToggle: (index) {
-                                      fromIndex = index;
-                                    },
+                  if (widget.isOneTabBar) ...[
+                    Container(
+                      padding: EdgeInsets.only(left: 7, right: 7),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            widget.is24Format
+                                ? Container(
+                                    height: 30,
+                                  )
+                                : Padding(
+                                    padding: EdgeInsets.only(bottom: 20),
+                                    child: ToggleSwitch(
+                                      minWidth: 90.0,
+                                      minHeight: 30,
+                                      cornerRadius: 20.0,
+                                      activeBgColor: widget.activeBgColor,
+                                      activeFgColor: widget.activeFgColor,
+                                      inactiveBgColor: widget.inactiveBgColor,
+                                      inactiveFgColor: widget.inactiveFgColor,
+                                      labels: ['AM', 'PM'],
+                                      initialLabelIndex: fromIndex,
+                                      onToggle: (index) {
+                                        fromIndex = index;
+                                      },
+                                    ),
+                                  ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    decoration: widget.timeContainerStyle ??
+                                        defaultDecoration,
+                                    child: isEdit[0]
+                                        ? TextField(
+                                            controller: textControllers[0],
+                                            focusNode: textFocus[0],
+                                            textAlign: TextAlign.center,
+                                            style: widget.selectedTimeStyle,
+                                            decoration: InputDecoration(
+                                                border: InputBorder.none),
+                                            keyboardType:
+                                                TextInputType.numberWithOptions(
+                                                    signed: true),
+                                            inputFormatters: <
+                                                TextInputFormatter>[
+                                              FilteringTextInputFormatter.allow(
+                                                  RegExp(r'[0-9]')),
+                                            ],
+                                            onSubmitted: (value) {
+                                              setState(() {
+                                                if (value.isNotEmpty) {
+                                                  if (int.parse(value) >
+                                                      _maxJamValue) {
+                                                    _jamFrom = _maxJamValue;
+                                                  } else {
+                                                    _jamFrom = int.parse(value);
+                                                  }
+                                                }
+
+                                                isEdit[0] = false;
+                                              });
+                                            },
+                                          )
+                                        : InkWell(
+                                            onTap: () {
+                                              if (widget.editable) {
+                                                setState(() {
+                                                  isEdit[0] = true;
+                                                  textFocus[0].requestFocus();
+                                                });
+                                              }
+                                            },
+                                            child: NumberPicker(
+                                                minValue: _minJamValue,
+                                                maxValue: _maxJamValue,
+                                                value: _jamFrom,
+                                                zeroPad: true,
+                                                textStyle:
+                                                    widget.unselectedTimeStyle,
+                                                selectedTextStyle:
+                                                    widget.selectedTimeStyle,
+                                                infiniteLoop: true,
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    _jamFrom = value;
+                                                  });
+                                                }),
+                                          ),
                                   ),
                                 ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  decoration: widget.timeContainerStyle ??
-                                      defaultDecoration,
-                                  child: isEdit[0]
-                                      ? TextField(
-                                          controller: textControllers[0],
-                                          focusNode: textFocus[0],
-                                          textAlign: TextAlign.center,
-                                          style: widget.selectedTimeStyle,
-                                          decoration: InputDecoration(
-                                              border: InputBorder.none),
-                                          keyboardType:
-                                              TextInputType.numberWithOptions(
-                                                  signed: true),
-                                          inputFormatters: <TextInputFormatter>[
-                                            FilteringTextInputFormatter.allow(
-                                                RegExp(r'[0-9]')),
-                                          ],
-                                          onSubmitted: (value) {
-                                            setState(() {
-                                              if (value.isNotEmpty) {
-                                                if (int.parse(value) >
-                                                    _maxJamValue) {
-                                                  _jamFrom = _maxJamValue;
-                                                } else {
-                                                  _jamFrom = int.parse(value);
-                                                }
-                                              }
-
-                                              isEdit[0] = false;
-                                            });
-                                          },
-                                        )
-                                      : InkWell(
-                                          onTap: () {
-                                            if (widget.editable) {
+                                Padding(
+                                    padding:
+                                        EdgeInsets.only(left: 10, right: 10),
+                                    child: Text(":",
+                                        style: widget.separatorStyle)),
+                                Expanded(
+                                  child: Container(
+                                    decoration: widget.timeContainerStyle ??
+                                        defaultDecoration,
+                                    child: isEdit[1]
+                                        ? TextField(
+                                            controller: textControllers[1],
+                                            focusNode: textFocus[1],
+                                            textAlign: TextAlign.center,
+                                            style: widget.selectedTimeStyle,
+                                            decoration: InputDecoration(
+                                                border: InputBorder.none),
+                                            keyboardType:
+                                                TextInputType.numberWithOptions(
+                                                    signed: true),
+                                            inputFormatters: <
+                                                TextInputFormatter>[
+                                              FilteringTextInputFormatter.allow(
+                                                  RegExp(r'[0-9]')),
+                                            ],
+                                            onSubmitted: (value) {
                                               setState(() {
-                                                isEdit[0] = true;
-                                                textFocus[0].requestFocus();
-                                              });
-                                            }
-                                          },
-                                          child: NumberPicker(
-                                              minValue: _minJamValue,
-                                              maxValue: _maxJamValue,
-                                              value: _jamFrom,
-                                              zeroPad: true,
-                                              textStyle:
-                                                  widget.unselectedTimeStyle,
-                                              selectedTextStyle:
-                                                  widget.selectedTimeStyle,
-                                              infiniteLoop: true,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  _jamFrom = value;
-                                                });
-                                              }),
-                                        ),
-                                ),
-                              ),
-                              Padding(
-                                  padding: EdgeInsets.only(left: 10, right: 10),
-                                  child:
-                                      Text(":", style: widget.separatorStyle)),
-                              Expanded(
-                                child: Container(
-                                  decoration: widget.timeContainerStyle ??
-                                      defaultDecoration,
-                                  child: isEdit[1]
-                                      ? TextField(
-                                          controller: textControllers[1],
-                                          focusNode: textFocus[1],
-                                          textAlign: TextAlign.center,
-                                          style: widget.selectedTimeStyle,
-                                          decoration: InputDecoration(
-                                              border: InputBorder.none),
-                                          keyboardType:
-                                              TextInputType.numberWithOptions(
-                                                  signed: true),
-                                          inputFormatters: <TextInputFormatter>[
-                                            FilteringTextInputFormatter.allow(
-                                                RegExp(r'[0-9]')),
-                                          ],
-                                          onSubmitted: (value) {
-                                            setState(() {
-                                              if (value.isNotEmpty) {
-                                                if (int.parse(value) > 59) {
-                                                  _menitFrom = 59;
-                                                } else {
-                                                  _menitFrom = int.parse(value);
+                                                if (value.isNotEmpty) {
+                                                  if (int.parse(value) > 59) {
+                                                    _menitFrom = 59;
+                                                  } else {
+                                                    _menitFrom =
+                                                        int.parse(value);
+                                                  }
                                                 }
-                                              }
 
-                                              isEdit[1] = false;
-                                            });
-                                          },
-                                        )
-                                      : InkWell(
-                                          onTap: () {
-                                            if (widget.editable) {
-                                              setState(() {
-                                                isEdit[1] = true;
-                                                textFocus[1].requestFocus();
+                                                isEdit[1] = false;
                                               });
-                                            }
-                                          },
-                                          child: NumberPicker(
-                                              minValue: 0,
-                                              maxValue: 59,
-                                              value: _menitFrom,
-                                              zeroPad: true,
-                                              textStyle:
-                                                  widget.unselectedTimeStyle,
-                                              selectedTextStyle:
-                                                  widget.selectedTimeStyle,
-                                              infiniteLoop: true,
-                                              onChanged: (value) {
+                                            },
+                                          )
+                                        : InkWell(
+                                            onTap: () {
+                                              if (widget.editable) {
                                                 setState(() {
-                                                  _menitFrom = value;
+                                                  isEdit[1] = true;
+                                                  textFocus[1].requestFocus();
                                                 });
-                                              }),
-                                        ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(left: 7, right: 7),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          widget.is24Format
-                              ? Container(
-                                  height: 30,
-                                )
-                              : Padding(
-                                  padding: EdgeInsets.only(bottom: 20),
-                                  child: ToggleSwitch(
-                                    minWidth: 90.0,
-                                    minHeight: 30,
-                                    cornerRadius: 20.0,
-                                    activeBgColor: widget.activeBgColor,
-                                    activeFgColor: widget.activeFgColor,
-                                    inactiveBgColor: widget.inactiveBgColor,
-                                    inactiveFgColor: widget.inactiveFgColor,
-                                    labels: ['AM', 'PM'],
-                                    initialLabelIndex: toIndex,
-                                    onToggle: (index) {
-                                      toIndex = index;
-                                    },
+                                              }
+                                            },
+                                            child: NumberPicker(
+                                                minValue: 0,
+                                                maxValue: 59,
+                                                value: _menitFrom,
+                                                zeroPad: true,
+                                                textStyle:
+                                                    widget.unselectedTimeStyle,
+                                                selectedTextStyle:
+                                                    widget.selectedTimeStyle,
+                                                infiniteLoop: true,
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    _menitFrom = value;
+                                                  });
+                                                }),
+                                          ),
                                   ),
                                 ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  decoration: widget.timeContainerStyle ??
-                                      defaultDecoration,
-                                  child: isEdit[2]
-                                      ? TextField(
-                                          controller: textControllers[2],
-                                          focusNode: textFocus[2],
-                                          textAlign: TextAlign.center,
-                                          style: widget.selectedTimeStyle,
-                                          decoration: InputDecoration(
-                                              border: InputBorder.none),
-                                          keyboardType:
-                                              TextInputType.numberWithOptions(
-                                                  signed: true),
-                                          inputFormatters: <TextInputFormatter>[
-                                            FilteringTextInputFormatter.allow(
-                                                RegExp(r'[0-9]')),
-                                          ],
-                                          onSubmitted: (value) {
-                                            setState(() {
-                                              if (value.isNotEmpty) {
-                                                if (int.parse(value) >
-                                                    _maxJamValue) {
-                                                  _jamTo = _maxJamValue;
-                                                } else {
-                                                  _jamTo = int.parse(value);
-                                                }
-                                              }
-
-                                              isEdit[2] = false;
-                                            });
-                                          },
-                                        )
-                                      : InkWell(
-                                          onTap: () {
-                                            if (widget.editable) {
-                                              setState(() {
-                                                isEdit[2] = true;
-                                                textFocus[2].requestFocus();
-                                              });
-                                            }
-                                          },
-                                          child: NumberPicker(
-                                              minValue: _minJamValue,
-                                              maxValue: _maxJamValue,
-                                              value: _jamTo,
-                                              zeroPad: true,
-                                              textStyle:
-                                                  widget.unselectedTimeStyle,
-                                              selectedTextStyle:
-                                                  widget.selectedTimeStyle,
-                                              infiniteLoop: true,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  _jamTo = value;
-                                                });
-                                              }),
-                                        ),
-                                ),
-                              ),
-                              Padding(
-                                  padding: EdgeInsets.only(left: 10, right: 10),
-                                  child:
-                                      Text(":", style: widget.separatorStyle)),
-                              Expanded(
-                                child: Container(
-                                  decoration: widget.timeContainerStyle ??
-                                      defaultDecoration,
-                                  child: isEdit[3]
-                                      ? TextField(
-                                          controller: textControllers[3],
-                                          focusNode: textFocus[3],
-                                          textAlign: TextAlign.center,
-                                          style: widget.selectedTimeStyle,
-                                          decoration: InputDecoration(
-                                              border: InputBorder.none),
-                                          keyboardType:
-                                              TextInputType.numberWithOptions(
-                                                  signed: true),
-                                          inputFormatters: <TextInputFormatter>[
-                                            FilteringTextInputFormatter.allow(
-                                                RegExp(r'[0-9]')),
-                                          ],
-                                          onSubmitted: (value) {
-                                            setState(() {
-                                              if (value.isNotEmpty) {
-                                                if (int.parse(value) > 59) {
-                                                  _menitTo = 59;
-                                                } else {
-                                                  _menitTo = int.parse(value);
-                                                }
-                                              }
-
-                                              isEdit[3] = false;
-                                            });
-                                          },
-                                        )
-                                      : InkWell(
-                                          onTap: () {
-                                            if (widget.editable) {
-                                              setState(() {
-                                                isEdit[3] = true;
-                                                textFocus[3].requestFocus();
-                                              });
-                                            }
-                                          },
-                                          child: NumberPicker(
-                                              minValue: 0,
-                                              maxValue: 59,
-                                              value: _menitTo,
-                                              zeroPad: true,
-                                              textStyle:
-                                                  widget.unselectedTimeStyle,
-                                              selectedTextStyle:
-                                                  widget.selectedTimeStyle,
-                                              infiniteLoop: true,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  _menitTo = value;
-                                                });
-                                              }),
-                                        ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
+                  ] else ...[
+                    Container(
+                      padding: EdgeInsets.only(left: 7, right: 7),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            widget.is24Format
+                                ? Container(
+                                    height: 30,
+                                  )
+                                : Padding(
+                                    padding: EdgeInsets.only(bottom: 20),
+                                    child: ToggleSwitch(
+                                      minWidth: 90.0,
+                                      minHeight: 30,
+                                      cornerRadius: 20.0,
+                                      activeBgColor: widget.activeBgColor,
+                                      activeFgColor: widget.activeFgColor,
+                                      inactiveBgColor: widget.inactiveBgColor,
+                                      inactiveFgColor: widget.inactiveFgColor,
+                                      labels: ['AM', 'PM'],
+                                      initialLabelIndex: fromIndex,
+                                      onToggle: (index) {
+                                        fromIndex = index;
+                                      },
+                                    ),
+                                  ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    decoration: widget.timeContainerStyle ??
+                                        defaultDecoration,
+                                    child: isEdit[0]
+                                        ? TextField(
+                                            controller: textControllers[0],
+                                            focusNode: textFocus[0],
+                                            textAlign: TextAlign.center,
+                                            style: widget.selectedTimeStyle,
+                                            decoration: InputDecoration(
+                                                border: InputBorder.none),
+                                            keyboardType:
+                                                TextInputType.numberWithOptions(
+                                                    signed: true),
+                                            inputFormatters: <
+                                                TextInputFormatter>[
+                                              FilteringTextInputFormatter.allow(
+                                                  RegExp(r'[0-9]')),
+                                            ],
+                                            onSubmitted: (value) {
+                                              setState(() {
+                                                if (value.isNotEmpty) {
+                                                  if (int.parse(value) >
+                                                      _maxJamValue) {
+                                                    _jamFrom = _maxJamValue;
+                                                  } else {
+                                                    _jamFrom = int.parse(value);
+                                                  }
+                                                }
+
+                                                isEdit[0] = false;
+                                              });
+                                            },
+                                          )
+                                        : InkWell(
+                                            onTap: () {
+                                              if (widget.editable) {
+                                                setState(() {
+                                                  isEdit[0] = true;
+                                                  textFocus[0].requestFocus();
+                                                });
+                                              }
+                                            },
+                                            child: NumberPicker(
+                                                minValue: _minJamValue,
+                                                maxValue: _maxJamValue,
+                                                value: _jamFrom,
+                                                zeroPad: true,
+                                                textStyle:
+                                                    widget.unselectedTimeStyle,
+                                                selectedTextStyle:
+                                                    widget.selectedTimeStyle,
+                                                infiniteLoop: true,
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    _jamFrom = value;
+                                                  });
+                                                }),
+                                          ),
+                                  ),
+                                ),
+                                Padding(
+                                    padding:
+                                        EdgeInsets.only(left: 10, right: 10),
+                                    child: Text(":",
+                                        style: widget.separatorStyle)),
+                                Expanded(
+                                  child: Container(
+                                    decoration: widget.timeContainerStyle ??
+                                        defaultDecoration,
+                                    child: isEdit[1]
+                                        ? TextField(
+                                            controller: textControllers[1],
+                                            focusNode: textFocus[1],
+                                            textAlign: TextAlign.center,
+                                            style: widget.selectedTimeStyle,
+                                            decoration: InputDecoration(
+                                                border: InputBorder.none),
+                                            keyboardType:
+                                                TextInputType.numberWithOptions(
+                                                    signed: true),
+                                            inputFormatters: <
+                                                TextInputFormatter>[
+                                              FilteringTextInputFormatter.allow(
+                                                  RegExp(r'[0-9]')),
+                                            ],
+                                            onSubmitted: (value) {
+                                              setState(() {
+                                                if (value.isNotEmpty) {
+                                                  if (int.parse(value) > 59) {
+                                                    _menitFrom = 59;
+                                                  } else {
+                                                    _menitFrom =
+                                                        int.parse(value);
+                                                  }
+                                                }
+
+                                                isEdit[1] = false;
+                                              });
+                                            },
+                                          )
+                                        : InkWell(
+                                            onTap: () {
+                                              if (widget.editable) {
+                                                setState(() {
+                                                  isEdit[1] = true;
+                                                  textFocus[1].requestFocus();
+                                                });
+                                              }
+                                            },
+                                            child: NumberPicker(
+                                                minValue: 0,
+                                                maxValue: 59,
+                                                value: _menitFrom,
+                                                zeroPad: true,
+                                                textStyle:
+                                                    widget.unselectedTimeStyle,
+                                                selectedTextStyle:
+                                                    widget.selectedTimeStyle,
+                                                infiniteLoop: true,
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    _menitFrom = value;
+                                                  });
+                                                }),
+                                          ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(left: 7, right: 7),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            widget.is24Format
+                                ? Container(
+                                    height: 30,
+                                  )
+                                : Padding(
+                                    padding: EdgeInsets.only(bottom: 20),
+                                    child: ToggleSwitch(
+                                      minWidth: 90.0,
+                                      minHeight: 30,
+                                      cornerRadius: 20.0,
+                                      activeBgColor: widget.activeBgColor,
+                                      activeFgColor: widget.activeFgColor,
+                                      inactiveBgColor: widget.inactiveBgColor,
+                                      inactiveFgColor: widget.inactiveFgColor,
+                                      labels: ['AM', 'PM'],
+                                      initialLabelIndex: toIndex,
+                                      onToggle: (index) {
+                                        toIndex = index;
+                                      },
+                                    ),
+                                  ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    decoration: widget.timeContainerStyle ??
+                                        defaultDecoration,
+                                    child: isEdit[2]
+                                        ? TextField(
+                                            controller: textControllers[2],
+                                            focusNode: textFocus[2],
+                                            textAlign: TextAlign.center,
+                                            style: widget.selectedTimeStyle,
+                                            decoration: InputDecoration(
+                                                border: InputBorder.none),
+                                            keyboardType:
+                                                TextInputType.numberWithOptions(
+                                                    signed: true),
+                                            inputFormatters: <
+                                                TextInputFormatter>[
+                                              FilteringTextInputFormatter.allow(
+                                                  RegExp(r'[0-9]')),
+                                            ],
+                                            onSubmitted: (value) {
+                                              setState(() {
+                                                if (value.isNotEmpty) {
+                                                  if (int.parse(value) >
+                                                      _maxJamValue) {
+                                                    _jamTo = _maxJamValue;
+                                                  } else {
+                                                    _jamTo = int.parse(value);
+                                                  }
+                                                }
+
+                                                isEdit[2] = false;
+                                              });
+                                            },
+                                          )
+                                        : InkWell(
+                                            onTap: () {
+                                              if (widget.editable) {
+                                                setState(() {
+                                                  isEdit[2] = true;
+                                                  textFocus[2].requestFocus();
+                                                });
+                                              }
+                                            },
+                                            child: NumberPicker(
+                                                minValue: _minJamValue,
+                                                maxValue: _maxJamValue,
+                                                value: _jamTo,
+                                                zeroPad: true,
+                                                textStyle:
+                                                    widget.unselectedTimeStyle,
+                                                selectedTextStyle:
+                                                    widget.selectedTimeStyle,
+                                                infiniteLoop: true,
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    _jamTo = value;
+                                                  });
+                                                }),
+                                          ),
+                                  ),
+                                ),
+                                Padding(
+                                    padding:
+                                        EdgeInsets.only(left: 10, right: 10),
+                                    child: Text(":",
+                                        style: widget.separatorStyle)),
+                                Expanded(
+                                  child: Container(
+                                    decoration: widget.timeContainerStyle ??
+                                        defaultDecoration,
+                                    child: isEdit[3]
+                                        ? TextField(
+                                            controller: textControllers[3],
+                                            focusNode: textFocus[3],
+                                            textAlign: TextAlign.center,
+                                            style: widget.selectedTimeStyle,
+                                            decoration: InputDecoration(
+                                                border: InputBorder.none),
+                                            keyboardType:
+                                                TextInputType.numberWithOptions(
+                                                    signed: true),
+                                            inputFormatters: <
+                                                TextInputFormatter>[
+                                              FilteringTextInputFormatter.allow(
+                                                  RegExp(r'[0-9]')),
+                                            ],
+                                            onSubmitted: (value) {
+                                              setState(() {
+                                                if (value.isNotEmpty) {
+                                                  if (int.parse(value) > 59) {
+                                                    _menitTo = 59;
+                                                  } else {
+                                                    _menitTo = int.parse(value);
+                                                  }
+                                                }
+
+                                                isEdit[3] = false;
+                                              });
+                                            },
+                                          )
+                                        : InkWell(
+                                            onTap: () {
+                                              if (widget.editable) {
+                                                setState(() {
+                                                  isEdit[3] = true;
+                                                  textFocus[3].requestFocus();
+                                                });
+                                              }
+                                            },
+                                            child: NumberPicker(
+                                                minValue: 0,
+                                                maxValue: 59,
+                                                value: _menitTo,
+                                                zeroPad: true,
+                                                textStyle:
+                                                    widget.unselectedTimeStyle,
+                                                selectedTextStyle:
+                                                    widget.selectedTimeStyle,
+                                                infiniteLoop: true,
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    _menitTo = value;
+                                                  });
+                                                }),
+                                          ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -633,8 +833,60 @@ class _TimeRangePickerState extends State<TimeRangePicker>
                     )),
                 TextButton(
                     onPressed: () {
-                      if (_selectedTab == 0) {
+                      if (_selectedTab == 0 && !widget.isOneTabBar) {
                         _tabController.animateTo(1);
+                      } else if (widget.isOneTabBar) {
+                        if (isEdit[0]) {
+                          if (textControllers[0].text.isNotEmpty) {
+                            if (int.parse(textControllers[0].text) >
+                                _maxJamValue) {
+                              _jamFrom = _maxJamValue;
+                            } else {
+                              _jamFrom = int.parse(textControllers[0].text);
+                            }
+                          }
+                        }
+
+                        if (isEdit[2]) {
+                          if (textControllers[2].text.isNotEmpty) {
+                            if (int.parse(textControllers[2].text) >
+                                _maxJamValue) {
+                              _jamTo = _maxJamValue;
+                            } else {
+                              _jamTo = int.parse(textControllers[2].text);
+                            }
+                          }
+                        }
+
+                        if (isEdit[1]) {
+                          if (textControllers[1].text.isNotEmpty) {
+                            if (int.parse(textControllers[1].text) > 59) {
+                              _menitFrom = 59;
+                            } else {
+                              _menitFrom = int.parse(textControllers[1].text);
+                            }
+                          }
+                        }
+
+                        if (isEdit[3]) {
+                          if (textControllers[3].text.isNotEmpty) {
+                            if (int.parse(textControllers[3].text) > 59) {
+                              _menitTo = 59;
+                            } else {
+                              _menitTo = int.parse(textControllers[3].text);
+                            }
+                          }
+                        }
+
+                        var jamFr = widget.is24Format
+                            ? _jamFrom
+                            : fromIndex == 1
+                                ? (_jamFrom + 12)
+                                : _jamFrom;
+
+                        widget.onSelectTime?.call(
+                          TimeOfDay(hour: jamFr, minute: _menitFrom),
+                        );
                       } else {
                         if (isEdit[0]) {
                           if (textControllers[0].text.isNotEmpty) {

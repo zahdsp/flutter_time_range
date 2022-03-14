@@ -47,9 +47,46 @@ class MyAppState extends State<MyApp> {
                           _navigatorKey.currentState.overlay.context);
                     },
                   ),
+                  TextButton(
+                    child: Text("Show Dialog One Tab"),
+                    onPressed: () {
+                      showTimePickerOneTab(
+                          _navigatorKey.currentState.overlay.context);
+                    },
+                  ),
                 ],
               ),
             )));
+  }
+
+  Future<void> showTimePickerOneTab(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Choose event time"),
+            content: TimeRangePicker(
+              initialFromHour: DateTime.now().hour,
+              initialFromMinutes: DateTime.now().minute,
+              initialToHour: DateTime.now().hour,
+              initialToMinutes: DateTime.now().minute,
+              cancelText: "Cancel",
+              selectText: "Select",
+              editable: true,
+              is24Format: true,
+              disableTabInteraction: true,
+              isOneTabBar: true,
+              separatorStyle: TextStyle(color: Colors.grey[900], fontSize: 30),
+              onSelectTime: (from) {
+                _messangerKey.currentState.showSnackBar(
+                  SnackBar(content: Text("From : $from")),
+                );
+                Navigator.pop(context);
+              },
+              onCancel: () => Navigator.pop(context),
+            ),
+          );
+        });
   }
 
   Future<void> showTimeRangePicker(BuildContext context) {
