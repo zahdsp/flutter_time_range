@@ -6,7 +6,7 @@ import 'package:numberpicker/numberpicker.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 typedef onSelectCallback = void Function(TimeOfDay from, TimeOfDay to);
-typedef onSelectOneCallback = void Function(TimeOfDay from);
+typedef onSelectOneCallback = void Function(TimeOfDay timeOfDay);
 typedef onCancelCallback = void Function();
 
 class TimeRangePicker extends StatefulWidget {
