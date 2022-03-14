@@ -129,6 +129,9 @@ class TimeRangePicker extends StatefulWidget {
   // Condition using one tab or two tab
   final bool isOneTabBar;
 
+  /// Text Style of label bottom
+  final TextStyle labelBottomTextStyle;
+
   TimeRangePicker({
     Key? key,
     required this.initialFromHour,
@@ -170,6 +173,8 @@ class TimeRangePicker extends StatefulWidget {
     this.activeLabelColor = Colors.blueAccent,
     this.inactiveLabelColor = Colors.grey,
     this.indicatorColor = Colors.blueAccent,
+    this.labelBottomTextStyle =
+        const TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
   }) : super(key: key);
 
   @override
@@ -348,14 +353,17 @@ class _TimeRangePickerState extends State<TimeRangePicker>
                                             textAlign: TextAlign.center,
                                             style: widget.selectedTimeStyle,
                                             decoration: InputDecoration(
-                                                border: InputBorder.none),
+                                              border: InputBorder.none,
+                                            ),
                                             keyboardType:
                                                 TextInputType.numberWithOptions(
-                                                    signed: true),
+                                              signed: true,
+                                            ),
                                             inputFormatters: <
                                                 TextInputFormatter>[
                                               FilteringTextInputFormatter.allow(
-                                                  RegExp(r'[0-9]')),
+                                                RegExp(r'[0-9]'),
+                                              ),
                                             ],
                                             onSubmitted: (value) {
                                               setState(() {
@@ -382,28 +390,31 @@ class _TimeRangePickerState extends State<TimeRangePicker>
                                               }
                                             },
                                             child: NumberPicker(
-                                                minValue: _minJamValue,
-                                                maxValue: _maxJamValue,
-                                                value: _jamFrom,
-                                                zeroPad: true,
-                                                textStyle:
-                                                    widget.unselectedTimeStyle,
-                                                selectedTextStyle:
-                                                    widget.selectedTimeStyle,
-                                                infiniteLoop: true,
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    _jamFrom = value;
-                                                  });
-                                                }),
+                                              minValue: _minJamValue,
+                                              maxValue: _maxJamValue,
+                                              value: _jamFrom,
+                                              zeroPad: true,
+                                              textStyle:
+                                                  widget.unselectedTimeStyle,
+                                              selectedTextStyle:
+                                                  widget.selectedTimeStyle,
+                                              infiniteLoop: true,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  _jamFrom = value;
+                                                });
+                                              },
+                                            ),
                                           ),
                                   ),
                                 ),
                                 Padding(
-                                    padding:
-                                        EdgeInsets.only(left: 10, right: 10),
-                                    child: Text(":",
-                                        style: widget.separatorStyle)),
+                                  padding: EdgeInsets.only(left: 10, right: 10),
+                                  child: Text(
+                                    ":",
+                                    style: widget.separatorStyle,
+                                  ),
+                                ),
                                 Expanded(
                                   child: Container(
                                     decoration: widget.timeContainerStyle ??
@@ -415,14 +426,17 @@ class _TimeRangePickerState extends State<TimeRangePicker>
                                             textAlign: TextAlign.center,
                                             style: widget.selectedTimeStyle,
                                             decoration: InputDecoration(
-                                                border: InputBorder.none),
+                                              border: InputBorder.none,
+                                            ),
                                             keyboardType:
                                                 TextInputType.numberWithOptions(
-                                                    signed: true),
+                                              signed: true,
+                                            ),
                                             inputFormatters: <
                                                 TextInputFormatter>[
                                               FilteringTextInputFormatter.allow(
-                                                  RegExp(r'[0-9]')),
+                                                RegExp(r'[0-9]'),
+                                              ),
                                             ],
                                             onSubmitted: (value) {
                                               setState(() {
@@ -449,20 +463,21 @@ class _TimeRangePickerState extends State<TimeRangePicker>
                                               }
                                             },
                                             child: NumberPicker(
-                                                minValue: 0,
-                                                maxValue: 59,
-                                                value: _menitFrom,
-                                                zeroPad: true,
-                                                textStyle:
-                                                    widget.unselectedTimeStyle,
-                                                selectedTextStyle:
-                                                    widget.selectedTimeStyle,
-                                                infiniteLoop: true,
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    _menitFrom = value;
-                                                  });
-                                                }),
+                                              minValue: 0,
+                                              maxValue: 59,
+                                              value: _menitFrom,
+                                              zeroPad: true,
+                                              textStyle:
+                                                  widget.unselectedTimeStyle,
+                                              selectedTextStyle:
+                                                  widget.selectedTimeStyle,
+                                              infiniteLoop: true,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  _menitFrom = value;
+                                                });
+                                              },
+                                            ),
                                           ),
                                   ),
                                 ),
@@ -514,14 +529,17 @@ class _TimeRangePickerState extends State<TimeRangePicker>
                                             textAlign: TextAlign.center,
                                             style: widget.selectedTimeStyle,
                                             decoration: InputDecoration(
-                                                border: InputBorder.none),
+                                              border: InputBorder.none,
+                                            ),
                                             keyboardType:
                                                 TextInputType.numberWithOptions(
-                                                    signed: true),
+                                              signed: true,
+                                            ),
                                             inputFormatters: <
                                                 TextInputFormatter>[
                                               FilteringTextInputFormatter.allow(
-                                                  RegExp(r'[0-9]')),
+                                                RegExp(r'[0-9]'),
+                                              ),
                                             ],
                                             onSubmitted: (value) {
                                               setState(() {
@@ -548,28 +566,31 @@ class _TimeRangePickerState extends State<TimeRangePicker>
                                               }
                                             },
                                             child: NumberPicker(
-                                                minValue: _minJamValue,
-                                                maxValue: _maxJamValue,
-                                                value: _jamFrom,
-                                                zeroPad: true,
-                                                textStyle:
-                                                    widget.unselectedTimeStyle,
-                                                selectedTextStyle:
-                                                    widget.selectedTimeStyle,
-                                                infiniteLoop: true,
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    _jamFrom = value;
-                                                  });
-                                                }),
+                                              minValue: _minJamValue,
+                                              maxValue: _maxJamValue,
+                                              value: _jamFrom,
+                                              zeroPad: true,
+                                              textStyle:
+                                                  widget.unselectedTimeStyle,
+                                              selectedTextStyle:
+                                                  widget.selectedTimeStyle,
+                                              infiniteLoop: true,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  _jamFrom = value;
+                                                });
+                                              },
+                                            ),
                                           ),
                                   ),
                                 ),
                                 Padding(
-                                    padding:
-                                        EdgeInsets.only(left: 10, right: 10),
-                                    child: Text(":",
-                                        style: widget.separatorStyle)),
+                                  padding: EdgeInsets.only(left: 10, right: 10),
+                                  child: Text(
+                                    ":",
+                                    style: widget.separatorStyle,
+                                  ),
+                                ),
                                 Expanded(
                                   child: Container(
                                     decoration: widget.timeContainerStyle ??
@@ -581,14 +602,17 @@ class _TimeRangePickerState extends State<TimeRangePicker>
                                             textAlign: TextAlign.center,
                                             style: widget.selectedTimeStyle,
                                             decoration: InputDecoration(
-                                                border: InputBorder.none),
+                                              border: InputBorder.none,
+                                            ),
                                             keyboardType:
                                                 TextInputType.numberWithOptions(
-                                                    signed: true),
+                                              signed: true,
+                                            ),
                                             inputFormatters: <
                                                 TextInputFormatter>[
                                               FilteringTextInputFormatter.allow(
-                                                  RegExp(r'[0-9]')),
+                                                RegExp(r'[0-9]'),
+                                              ),
                                             ],
                                             onSubmitted: (value) {
                                               setState(() {
@@ -615,20 +639,21 @@ class _TimeRangePickerState extends State<TimeRangePicker>
                                               }
                                             },
                                             child: NumberPicker(
-                                                minValue: 0,
-                                                maxValue: 59,
-                                                value: _menitFrom,
-                                                zeroPad: true,
-                                                textStyle:
-                                                    widget.unselectedTimeStyle,
-                                                selectedTextStyle:
-                                                    widget.selectedTimeStyle,
-                                                infiniteLoop: true,
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    _menitFrom = value;
-                                                  });
-                                                }),
+                                              minValue: 0,
+                                              maxValue: 59,
+                                              value: _menitFrom,
+                                              zeroPad: true,
+                                              textStyle:
+                                                  widget.unselectedTimeStyle,
+                                              selectedTextStyle:
+                                                  widget.selectedTimeStyle,
+                                              infiniteLoop: true,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  _menitFrom = value;
+                                                });
+                                              },
+                                            ),
                                           ),
                                   ),
                                 ),
@@ -679,14 +704,17 @@ class _TimeRangePickerState extends State<TimeRangePicker>
                                             textAlign: TextAlign.center,
                                             style: widget.selectedTimeStyle,
                                             decoration: InputDecoration(
-                                                border: InputBorder.none),
+                                              border: InputBorder.none,
+                                            ),
                                             keyboardType:
                                                 TextInputType.numberWithOptions(
-                                                    signed: true),
+                                              signed: true,
+                                            ),
                                             inputFormatters: <
                                                 TextInputFormatter>[
                                               FilteringTextInputFormatter.allow(
-                                                  RegExp(r'[0-9]')),
+                                                RegExp(r'[0-9]'),
+                                              ),
                                             ],
                                             onSubmitted: (value) {
                                               setState(() {
@@ -713,28 +741,31 @@ class _TimeRangePickerState extends State<TimeRangePicker>
                                               }
                                             },
                                             child: NumberPicker(
-                                                minValue: _minJamValue,
-                                                maxValue: _maxJamValue,
-                                                value: _jamTo,
-                                                zeroPad: true,
-                                                textStyle:
-                                                    widget.unselectedTimeStyle,
-                                                selectedTextStyle:
-                                                    widget.selectedTimeStyle,
-                                                infiniteLoop: true,
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    _jamTo = value;
-                                                  });
-                                                }),
+                                              minValue: _minJamValue,
+                                              maxValue: _maxJamValue,
+                                              value: _jamTo,
+                                              zeroPad: true,
+                                              textStyle:
+                                                  widget.unselectedTimeStyle,
+                                              selectedTextStyle:
+                                                  widget.selectedTimeStyle,
+                                              infiniteLoop: true,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  _jamTo = value;
+                                                });
+                                              },
+                                            ),
                                           ),
                                   ),
                                 ),
                                 Padding(
-                                    padding:
-                                        EdgeInsets.only(left: 10, right: 10),
-                                    child: Text(":",
-                                        style: widget.separatorStyle)),
+                                  padding: EdgeInsets.only(left: 10, right: 10),
+                                  child: Text(
+                                    ":",
+                                    style: widget.separatorStyle,
+                                  ),
+                                ),
                                 Expanded(
                                   child: Container(
                                     decoration: widget.timeContainerStyle ??
@@ -746,14 +777,17 @@ class _TimeRangePickerState extends State<TimeRangePicker>
                                             textAlign: TextAlign.center,
                                             style: widget.selectedTimeStyle,
                                             decoration: InputDecoration(
-                                                border: InputBorder.none),
+                                              border: InputBorder.none,
+                                            ),
                                             keyboardType:
                                                 TextInputType.numberWithOptions(
-                                                    signed: true),
+                                              signed: true,
+                                            ),
                                             inputFormatters: <
                                                 TextInputFormatter>[
                                               FilteringTextInputFormatter.allow(
-                                                  RegExp(r'[0-9]')),
+                                                RegExp(r'[0-9]'),
+                                              ),
                                             ],
                                             onSubmitted: (value) {
                                               setState(() {
@@ -779,20 +813,21 @@ class _TimeRangePickerState extends State<TimeRangePicker>
                                               }
                                             },
                                             child: NumberPicker(
-                                                minValue: 0,
-                                                maxValue: 59,
-                                                value: _menitTo,
-                                                zeroPad: true,
-                                                textStyle:
-                                                    widget.unselectedTimeStyle,
-                                                selectedTextStyle:
-                                                    widget.selectedTimeStyle,
-                                                infiniteLoop: true,
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    _menitTo = value;
-                                                  });
-                                                }),
+                                              minValue: 0,
+                                              maxValue: 59,
+                                              value: _menitTo,
+                                              zeroPad: true,
+                                              textStyle:
+                                                  widget.unselectedTimeStyle,
+                                              selectedTextStyle:
+                                                  widget.selectedTimeStyle,
+                                              infiniteLoop: true,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  _menitTo = value;
+                                                });
+                                              },
+                                            ),
                                           ),
                                   ),
                                 ),
@@ -813,153 +848,157 @@ class _TimeRangePickerState extends State<TimeRangePicker>
               mainAxisSize: MainAxisSize.max,
               children: [
                 TextButton(
-                    onPressed: () {
-                      if (_selectedTab == 1) {
-                        _tabController.animateTo(0);
-                      } else {
-                        widget.onCancel?.call();
-                      }
-                    },
-                    child: Row(
-                      children: [
-                        _selectedTab == 0
-                            ? widget.iconCancel ?? Container()
-                            : widget.iconBack ?? Container(),
-                        Padding(padding: EdgeInsets.only(right: 5)),
-                        Text(_selectedTab == 0
-                            ? widget.cancelText
-                            : widget.backText)
-                      ],
-                    )),
+                  onPressed: () {
+                    if (_selectedTab == 1) {
+                      _tabController.animateTo(0);
+                    } else {
+                      widget.onCancel?.call();
+                    }
+                  },
+                  child: Row(
+                    children: [
+                      _selectedTab == 0
+                          ? widget.iconCancel ?? Container()
+                          : widget.iconBack ?? Container(),
+                      Padding(padding: EdgeInsets.only(right: 5)),
+                      Text(
+                        _selectedTab == 0 ? widget.cancelText : widget.backText,
+                        style: widget.labelBottomTextStyle,
+                      )
+                    ],
+                  ),
+                ),
                 TextButton(
-                    onPressed: () {
-                      if (_selectedTab == 0 && !widget.isOneTabBar) {
-                        _tabController.animateTo(1);
-                      } else if (widget.isOneTabBar) {
-                        if (isEdit[0]) {
-                          if (textControllers[0].text.isNotEmpty) {
-                            if (int.parse(textControllers[0].text) >
-                                _maxJamValue) {
-                              _jamFrom = _maxJamValue;
-                            } else {
-                              _jamFrom = int.parse(textControllers[0].text);
-                            }
+                  onPressed: () {
+                    if (_selectedTab == 0 && !widget.isOneTabBar) {
+                      _tabController.animateTo(1);
+                    } else if (widget.isOneTabBar) {
+                      if (isEdit[0]) {
+                        if (textControllers[0].text.isNotEmpty) {
+                          if (int.parse(textControllers[0].text) >
+                              _maxJamValue) {
+                            _jamFrom = _maxJamValue;
+                          } else {
+                            _jamFrom = int.parse(textControllers[0].text);
                           }
                         }
-
-                        if (isEdit[2]) {
-                          if (textControllers[2].text.isNotEmpty) {
-                            if (int.parse(textControllers[2].text) >
-                                _maxJamValue) {
-                              _jamTo = _maxJamValue;
-                            } else {
-                              _jamTo = int.parse(textControllers[2].text);
-                            }
-                          }
-                        }
-
-                        if (isEdit[1]) {
-                          if (textControllers[1].text.isNotEmpty) {
-                            if (int.parse(textControllers[1].text) > 59) {
-                              _menitFrom = 59;
-                            } else {
-                              _menitFrom = int.parse(textControllers[1].text);
-                            }
-                          }
-                        }
-
-                        if (isEdit[3]) {
-                          if (textControllers[3].text.isNotEmpty) {
-                            if (int.parse(textControllers[3].text) > 59) {
-                              _menitTo = 59;
-                            } else {
-                              _menitTo = int.parse(textControllers[3].text);
-                            }
-                          }
-                        }
-
-                        var jamFr = widget.is24Format
-                            ? _jamFrom
-                            : fromIndex == 1
-                                ? (_jamFrom + 12)
-                                : _jamFrom;
-
-                        widget.onSelectTime?.call(
-                          TimeOfDay(hour: jamFr, minute: _menitFrom),
-                        );
-                      } else {
-                        if (isEdit[0]) {
-                          if (textControllers[0].text.isNotEmpty) {
-                            if (int.parse(textControllers[0].text) >
-                                _maxJamValue) {
-                              _jamFrom = _maxJamValue;
-                            } else {
-                              _jamFrom = int.parse(textControllers[0].text);
-                            }
-                          }
-                        }
-
-                        if (isEdit[2]) {
-                          if (textControllers[2].text.isNotEmpty) {
-                            if (int.parse(textControllers[2].text) >
-                                _maxJamValue) {
-                              _jamTo = _maxJamValue;
-                            } else {
-                              _jamTo = int.parse(textControllers[2].text);
-                            }
-                          }
-                        }
-
-                        if (isEdit[1]) {
-                          if (textControllers[1].text.isNotEmpty) {
-                            if (int.parse(textControllers[1].text) > 59) {
-                              _menitFrom = 59;
-                            } else {
-                              _menitFrom = int.parse(textControllers[1].text);
-                            }
-                          }
-                        }
-
-                        if (isEdit[3]) {
-                          if (textControllers[3].text.isNotEmpty) {
-                            if (int.parse(textControllers[3].text) > 59) {
-                              _menitTo = 59;
-                            } else {
-                              _menitTo = int.parse(textControllers[3].text);
-                            }
-                          }
-                        }
-
-                        var jamFr = widget.is24Format
-                            ? _jamFrom
-                            : fromIndex == 1
-                                ? (_jamFrom + 12)
-                                : _jamFrom;
-
-                        var jamTo = widget.is24Format
-                            ? _jamTo
-                            : toIndex == 1
-                                ? (_jamTo + 12)
-                                : _jamTo;
-                        widget.onSelect?.call(
-                            TimeOfDay(hour: jamFr, minute: _menitFrom),
-                            TimeOfDay(hour: jamTo, minute: _menitTo));
                       }
-                    },
-                    child: Row(
-                      children: [
-                        _selectedTab == 0
-                            ? widget.iconNext ?? Container()
-                            : widget.iconSelect ?? Container(),
-                        Padding(padding: EdgeInsets.only(right: 5)),
-                        Text(_selectedTab == 0
-                            ? widget.nextText
-                            : widget.selectText),
-                      ],
-                    ))
+
+                      if (isEdit[2]) {
+                        if (textControllers[2].text.isNotEmpty) {
+                          if (int.parse(textControllers[2].text) >
+                              _maxJamValue) {
+                            _jamTo = _maxJamValue;
+                          } else {
+                            _jamTo = int.parse(textControllers[2].text);
+                          }
+                        }
+                      }
+
+                      if (isEdit[1]) {
+                        if (textControllers[1].text.isNotEmpty) {
+                          if (int.parse(textControllers[1].text) > 59) {
+                            _menitFrom = 59;
+                          } else {
+                            _menitFrom = int.parse(textControllers[1].text);
+                          }
+                        }
+                      }
+
+                      if (isEdit[3]) {
+                        if (textControllers[3].text.isNotEmpty) {
+                          if (int.parse(textControllers[3].text) > 59) {
+                            _menitTo = 59;
+                          } else {
+                            _menitTo = int.parse(textControllers[3].text);
+                          }
+                        }
+                      }
+
+                      var jamFr = widget.is24Format
+                          ? _jamFrom
+                          : fromIndex == 1
+                              ? (_jamFrom + 12)
+                              : _jamFrom;
+
+                      widget.onSelectTime?.call(
+                        TimeOfDay(hour: jamFr, minute: _menitFrom),
+                      );
+                    } else {
+                      if (isEdit[0]) {
+                        if (textControllers[0].text.isNotEmpty) {
+                          if (int.parse(textControllers[0].text) >
+                              _maxJamValue) {
+                            _jamFrom = _maxJamValue;
+                          } else {
+                            _jamFrom = int.parse(textControllers[0].text);
+                          }
+                        }
+                      }
+
+                      if (isEdit[2]) {
+                        if (textControllers[2].text.isNotEmpty) {
+                          if (int.parse(textControllers[2].text) >
+                              _maxJamValue) {
+                            _jamTo = _maxJamValue;
+                          } else {
+                            _jamTo = int.parse(textControllers[2].text);
+                          }
+                        }
+                      }
+
+                      if (isEdit[1]) {
+                        if (textControllers[1].text.isNotEmpty) {
+                          if (int.parse(textControllers[1].text) > 59) {
+                            _menitFrom = 59;
+                          } else {
+                            _menitFrom = int.parse(textControllers[1].text);
+                          }
+                        }
+                      }
+
+                      if (isEdit[3]) {
+                        if (textControllers[3].text.isNotEmpty) {
+                          if (int.parse(textControllers[3].text) > 59) {
+                            _menitTo = 59;
+                          } else {
+                            _menitTo = int.parse(textControllers[3].text);
+                          }
+                        }
+                      }
+
+                      var jamFr = widget.is24Format
+                          ? _jamFrom
+                          : fromIndex == 1
+                              ? (_jamFrom + 12)
+                              : _jamFrom;
+
+                      var jamTo = widget.is24Format
+                          ? _jamTo
+                          : toIndex == 1
+                              ? (_jamTo + 12)
+                              : _jamTo;
+                      widget.onSelect?.call(
+                          TimeOfDay(hour: jamFr, minute: _menitFrom),
+                          TimeOfDay(hour: jamTo, minute: _menitTo));
+                    }
+                  },
+                  child: Row(
+                    children: [
+                      _selectedTab == 0
+                          ? widget.iconNext ?? Container()
+                          : widget.iconSelect ?? Container(),
+                      Padding(padding: EdgeInsets.only(right: 5)),
+                      Text(
+                        _selectedTab == 0 ? widget.nextText : widget.selectText,
+                        style: widget.labelBottomTextStyle,
+                      ),
+                    ],
+                  ),
+                )
               ],
             ),
-          )
+          ),
         ],
       ),
     );
